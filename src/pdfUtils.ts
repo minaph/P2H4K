@@ -6,6 +6,7 @@ import { execSync } from "child_process";
 // import ILovePDFApi from "@ilovepdf/ilovepdf-nodejs";
 // import ILovePDFFile from "@ilovepdf/ilovepdf-js-core/utils/ILovePDFFile";
 
+import * as rax from 'retry-axios';
 import axios from "axios";
 // import dotenv from "dotenv";
 
@@ -252,7 +253,7 @@ export async function post(filePath: string, url: string) {
     const text = fs.readFileSync(filePath, "utf-8");
     // const contentBuffer = Buffer.from(text, "utf-8");
     // const base64 = contentBuffer.toString("base64");
-
+    const interceptorId = rax.attach();
     var res = await axios(url!, {
       method: "post",
       headers: {
@@ -264,6 +265,33 @@ export async function post(filePath: string, url: string) {
       },
       maxBodyLength: 1024 * 1024 * 25,
       maxContentLength: 1024 * 1024 * 25,
+      raxConfig: {
+        // Retry 3 times on requests that return a response (500, etc) before giving up.  Defaults to 3.
+        retry: 3,
+    
+        // Retry twice on errors that don't return a response (ENOTFOUND, ETIMEDOUT, etc).
+        noResponseRetries: 2,
+    
+        // HTTP methods to automatically retry.  Defaults to:
+        // ['GET', 'HEAD', 'OPTIONS', 'DELETE', 'PUT']
+        httpMethodsToRetry: ["POST"],
+    
+        // The response status codes to retry.  Supports a double
+        // array with a list of ranges.  Defaults to:
+        // [[100, 199], [429, 429], [500, 599]]
+        statusCodesToRetry: [[100, 199], [429, 429], [500, 599]],
+    
+        // You can set the backoff type.
+        // options are 'exponential' (default), 'static' or 'linear'
+        backoffType: 'exponential',
+    
+        // You can detect when a retry is happening, and figure out how many
+        // retry attempts have been made
+        onRetryAttempt: err => {
+          const cfg = rax.getConfig(err);
+          console.log(`Retry attempt #${cfg!.currentRetryAttempt}`);
+        }
+      }
     });
     // console.log(await res.text())
     return res;
