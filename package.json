@@ -30,7 +30,7 @@
     "webpack-dev-server": "^3.11.2"
   },
   "name": "p2h4k",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "P2H4K - PDF to HTML converter for Kindle",
   "license": "MIT",
   "keywords": [
