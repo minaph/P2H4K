@@ -201,6 +201,7 @@ function resize(text: string, fsTargetMean = 16, fsTargetStd = 8) {
     // new sizeRule("height", "h"),
     new sizeRule("bottom", "y"),
     new sizeRule("left", "x"),
+    new sizeRule("word-spacing", "ws")
   ];
 
   // const wsPattern = new sizeRule("word-spacing", "ws");
@@ -271,6 +272,3 @@ export async function post(filePath: string, url: string) {
   }
 }
 
-export function extraCharsSnapshot() {
-  document.body.innerHTML.match(/\p{Private_Use}/gu);
-}
