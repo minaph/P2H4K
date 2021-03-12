@@ -2,53 +2,14 @@ import fs from "fs";
 import path from "path";
 import { execSync } from "child_process";
 
-// import UnlockTask from "@ilovepdf/ilovepdf-js-core/tasks/UnlockTask";
-// import ILovePDFApi from "@ilovepdf/ilovepdf-nodejs";
-// import ILovePDFFile from "@ilovepdf/ilovepdf-js-core/utils/ILovePDFFile";
-
-import * as rax from 'retry-axios';
+import * as rax from "retry-axios";
 import axios from "axios";
-// import dotenv from "dotenv";
-
-// dotenv.config({
-//   path: path.resolve(__dirname, "../.env"),
-// });
 
 export function wslPath(path: string) {
   return path
     .replace(/\\/g, "/")
     .replace(/^([^\/]*):/, (_, drive: string) => "/mnt/" + drive.toLowerCase());
 }
-
-// export async function unlock(
-//   ilovepdf: ILovePDFApi,
-//   filepath: string,
-//   destDir: string
-// ) {
-//   // const errorHandler = (e: Error) => console.error(e);
-//   console.log("Requesting iLovePDF Web API...");
-//   let task = ilovepdf.newTask("unlock") as UnlockTask;
-//   let index = 0;
-//   try {
-//     task = await task.start();
-//     index++;
-//     const file = new ILovePDFFile(filepath);
-//     task = await task.addFile(file);
-//     index++;
-//     task = await task.process();
-//     index++;
-//     const data = await task.download();
-
-//     const basename = path.basename(file.filename, ".pdf") + "_unlocked.pdf";
-//     const newFilePath = path.join(destDir, basename);
-//     fs.writeFileSync(newFilePath, data);
-//     console.log("Done");
-//     return newFilePath;
-//   } catch (error) {
-//     console.error(error.message, "\nError index: " + index);
-//     throw error;
-//   }
-// }
 
 export class Converter {
   public options: string[];
@@ -199,21 +160,14 @@ function resize(text: string, fsTargetMean = 16, fsTargetStd = 8) {
     new sizeRule("font-size", "fs"),
     new sizeRule("vertical-align", "v"),
     new sizeRule("letter-spacing", "ls"),
-    // new sizeRule("height", "h"),
     new sizeRule("bottom", "y"),
     new sizeRule("left", "x"),
     new sizeRule("word-spacing", "ws"),
   ];
 
-  // const wsPattern = new sizeRule("word-spacing", "ws");
+  const hPattern = new sizeRule("height", "h");
 
-  // const lhPattern = new sizeRule("line-height", "ff");
-  // lhPattern.setPatterns(
-  //   /(\.ff[0-9a-z]{1,3})\{[^\{]*line-height:(-?[0-9\.]*);[^\}]*\}/,
-  //   /a^/
-  // );
-
-  patterns.forEach((pattern) => {
+  [...patterns, hPattern].forEach((pattern) => {
     pattern.setStats(text);
   });
 
@@ -224,9 +178,6 @@ function resize(text: string, fsTargetMean = 16, fsTargetStd = 8) {
 
   const meanRatio = fsTargetMean / fsPattern.mean;
   const stdRatio = fsTargetStd / fsPattern.std;
-
-  // const hPattern = patterns.filter((pattern) => pattern.name === "height")[0];
-  // hPattern.mean *= 0.5;
 
   console.log(
     `${fsPattern.name}: ${fsPattern.mean} ± ${fsPattern.std} -> ${fsTargetMean} ± ${fsTargetStd}`,
@@ -241,8 +192,7 @@ function resize(text: string, fsTargetMean = 16, fsTargetStd = 8) {
     );
   }, text);
 
-  // text = lhPattern.getResized(text, 2, lhPattern.std * stdRatio);
-  // text = wsPattern.getResized(text, 5, 1);
+  text = hPattern.getResized(text, 10 * fsTargetMean, 10 * fsTargetStd);
 
   return text;
 }
@@ -268,30 +218,34 @@ export async function post(filePath: string, url: string) {
       raxConfig: {
         // Retry 3 times on requests that return a response (500, etc) before giving up.  Defaults to 3.
         retry: 3,
-    
+
         // Retry twice on errors that don't return a response (ENOTFOUND, ETIMEDOUT, etc).
         noResponseRetries: 2,
-    
+
         // HTTP methods to automatically retry.  Defaults to:
         // ['GET', 'HEAD', 'OPTIONS', 'DELETE', 'PUT']
         httpMethodsToRetry: ["POST"],
-    
+
         // The response status codes to retry.  Supports a double
         // array with a list of ranges.  Defaults to:
         // [[100, 199], [429, 429], [500, 599]]
-        statusCodesToRetry: [[100, 199], [429, 429], [500, 599]],
-    
+        statusCodesToRetry: [
+          [100, 199],
+          [429, 429],
+          [500, 599],
+        ],
+
         // You can set the backoff type.
         // options are 'exponential' (default), 'static' or 'linear'
-        backoffType: 'exponential',
-    
+        backoffType: "exponential",
+
         // You can detect when a retry is happening, and figure out how many
         // retry attempts have been made
-        onRetryAttempt: err => {
+        onRetryAttempt: (err) => {
           const cfg = rax.getConfig(err);
           console.log(`Retry attempt #${cfg!.currentRetryAttempt}`);
-        }
-      }
+        },
+      },
     });
     // console.log(await res.text())
     return res;

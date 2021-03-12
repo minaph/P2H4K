@@ -14,9 +14,15 @@ console.log("Running Playwright...");
   const browser = await chromium.launch();
   const page = await browser.newPage();
 
+  page.on("console", async (msg) => {
+    for (let i = 0; i < msg.args().length; ++i) {
+      console.log(`${i}: ${await msg.args()[i].jsonValue()}`);
+    }
+  });
+
   await page.goto(`file:///${filePath.replace(/\\/g, "/")}`);
   await page.evaluate(`${main}`);
-  const text = `<html>${await page.innerHTML("html")}</html>`
+  const text = `<html>${await page.innerHTML("html")}</html>`;
 
   console.log("HTML Length: " + text.length);
   await browser.close();
