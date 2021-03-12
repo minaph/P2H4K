@@ -1,0 +1,12 @@
+node_modules
+testfile
+.env
+memo.md
+assets
+src/pdf2htmlEX
+src/ttfread.py
+src/snippet.js
+src/unlock.ts
+
+dist
+yarn-error.log

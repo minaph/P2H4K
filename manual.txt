@@ -1,0 +1,17 @@
+#####   P2H4K - PDF to HTML converter for Kindle   #####
+
+USAGE
+
+    node p2h4k /path/to/your/pdf [-h, --help] [-v, --version] [--post <url>]
+
+OPTIONS
+
+    -h, --help
+        Shows usage
+
+    --post <url>
+        Post the output file to the url.
+        Request body: {html: <the coverted html>, name: <filename>}
+
+    -v, --version
+        Shows Version info
