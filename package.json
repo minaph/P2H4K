@@ -31,7 +31,7 @@
     "webpack-dev-server": "^3.11.2"
   },
   "name": "p2h4k",
-  "version": "0.2.6",
+  "version": "0.3.0",
   "description": "P2H4K - PDF to HTML converter for Kindle",
   "license": "MIT",
   "keywords": [
@@ -57,6 +57,8 @@
   },
   "scripts": {
     "build": "webpack --mode production",
-    "dev": "webpack --watch"
+    "dev": "webpack --watch",
+    "relink": "yarn unlink && yarn link",
+    "reinstall": "yarn unlink && yarn global install p2h4k"
   }
 }
