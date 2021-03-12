@@ -8,5 +8,4 @@ src/ttfread.py
 src/snippet.js
 src/unlock.ts
 
-dist
 yarn-error.log

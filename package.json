@@ -38,7 +38,7 @@
     "HTML"
   ],
   "author": {
-    "name": "Yuki Minoh",
+    "name": "minaph",
     "email": "yukikaze.0511@gmail.com"
   },
   "bin": "./bin/cli.js",
@@ -48,10 +48,10 @@
   "man": "./manual.txt",
   "repository": {
     "type": "git",
-    "url": "https://github.com/"
+    "url": "https://github.com/minaph/P2H4K.git"
   },
   "bugs": {
-    "url": "https://github.com/",
+    "url": "https://github.com/minaph/P2H4K/issues",
     "email": "yukikaze.0511@gmail.com"
   },
   "scripts": {
