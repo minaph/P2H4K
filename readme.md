@@ -35,13 +35,13 @@ If your computer is based on Windows and pdf2htmlEX is installed on Windows subs
 Run
 
 ```shell
-npm install p2h4k
+npm install -g p2h4k
 ```
 
 or
 
 ```shell
-yarn install p2h4k
+yarn global install p2h4k
 ```
 
 ## Others
