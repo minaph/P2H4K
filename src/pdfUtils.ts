@@ -53,7 +53,7 @@ export class Converter {
   public options: string[];
   public appCommand: string;
 
-  constructor(appCommand: string) {
+  constructor(appCommand: string, tounicode: string) {
     this.appCommand = appCommand;
 
     this.options = [
@@ -70,7 +70,7 @@ export class Converter {
       // "--auto-hint 1",
       "--font-size-multiplier 1",
       "--space-as-offset 0",
-      "--tounicode 0", // for math, -1. for jp, 1
+      "--tounicode " + tounicode, // for math, -1. for jp, 1
       "--optimize-text 1",
       // "--correct-text-visibility 1",
       // "--bg-format jpg",
@@ -201,7 +201,7 @@ function resize(text: string, fsTargetMean = 16, fsTargetStd = 8) {
     // new sizeRule("height", "h"),
     new sizeRule("bottom", "y"),
     new sizeRule("left", "x"),
-    new sizeRule("word-spacing", "ws")
+    new sizeRule("word-spacing", "ws"),
   ];
 
   // const wsPattern = new sizeRule("word-spacing", "ws");
@@ -271,4 +271,3 @@ export async function post(filePath: string, url: string) {
     throw e;
   }
 }
-

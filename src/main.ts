@@ -28,7 +28,7 @@ if (help) {
 } else if (version) {
   console.log(`P2H4K\nv${packageJson.version}`);
 } else {
-  console.log(process.argv);
+  // console.log(process.argv);
   let bin: string[];
   if (typeof packageJson.bin === "string") {
     bin = [packageJson.bin];
@@ -43,6 +43,10 @@ if (help) {
     (x, i, arr) =>
       i > p2h4kIndex && !x.startsWith("-") && arr[i - 1] !== "--post"
   );
+
+  const tounicode = process.argv.find(
+    (v, i, arr) => i > 1 && arr[i - 1] === "--tounicode"
+  ) || "-1";
 
   const inputFilePath = path.resolve(process.cwd(), inputFile!);
   const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "P2H4K-"));
@@ -78,7 +82,7 @@ if (help) {
 
   console.time("P2H4K");
 
-  let c = new Converter("wsl pdf2htmlEX");
+  let c = new Converter("wsl pdf2htmlEX", tounicode);
   processingFile = c.convert(wslPath(processingFile), wslPath(tempDir));
 
   processingFile = CSSAdjustment(processingFile, tempDir);
@@ -113,7 +117,7 @@ if (help) {
           console.log(res.status, res.statusText);
         })
         .catch((err) => {
-          console.error(err);
+          console.error(err.message);
         });
     }
   }

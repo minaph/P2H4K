@@ -2,7 +2,7 @@
 
 USAGE
 
-    node p2h4k /path/to/your/pdf [-h, --help] [-v, --version] [--post <url>]
+    node p2h4k /path/to/your/pdf [-h, --help][-v, --version][--post <url>][--tounicode 1|0|-1]
 
 OPTIONS
 
@@ -15,3 +15,10 @@ OPTIONS
 
     -v, --version
         Shows Version info
+
+    --tounicode 1|0|-1 (Default: -1)
+        pdf2htmlEX option. 
+        Recommend if the paper is
+            english math papers:       -1,
+            non-latin chars papers:     1,
+            other:                      0.
